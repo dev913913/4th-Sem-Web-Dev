@@ -7,7 +7,19 @@
 
     <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet">
     <style>
-        .white-theme {
+        .stylish-text {
+            font-size: 70px;
+            font-weight: 600;
+            background-image: linear-gradient(to left, #553c9a, #b393d3);
+            color: transparent;
+            background-clip: text;
+            -webkit-background-clip: text;
+            margin-left: 10px;
+        }
+
+        
+
+        */ .white-theme {
             background-color: white;
             color: black;
         }
@@ -21,15 +33,17 @@
 </head>
 
 <body>
-    <!-- <h1>Heading 1</h1> -->
-    
+    <h1 class="stylish-text">Theme Changer</h1>
+
     <button onclick="changetheme2()" type="button"
-        class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700" style="float:right; margin-top: 10px; margin-right: 40px; ">Dark</button>
+        class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+        style="float:right; margin-top: 10px; margin-right: 40px; ">Dark</button>
 
     <button onclick="changetheme1()" type="button"
-        class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-black-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-black-600 dark:hover:bg-gray-700 dark:hover:border-black-600 dark:focus:ring-black-700 " style="float:right; margin-top: 10px;">Light</button>
+        class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-black-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-black-600 dark:hover:bg-gray-700 dark:hover:border-black-600 dark:focus:ring-black-700 "
+        style="float:right; margin-top: 10px;">Light</button>
 
-    
+
     <!-- <button onclick="changetheme1()" type="button">White Theme</button>
     <button onclick="changetheme2()" type="button">Dark Theme</button> -->
     <script>
