@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet">
+    <style>
+        .white-theme {
+            background-color: white;
+            color: black;
+        }
+
+        .dark-theme {
+            background-color: black;
+            color: white;
+        }
+    </style>
+    <title>Document</title>
+</head>
+
+<body>
+    <!-- <h1>Heading 1</h1> -->
+    
+    <button onclick="changetheme1()" type="button"
+        class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 ">Light</button>
+
+    <button onclick="changetheme2()" type="button"
+        class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Dark</button>
+    <!-- <button onclick="changetheme1()" type="button">White Theme</button>
+    <button onclick="changetheme2()" type="button">Dark Theme</button> -->
+    <script>
+        function changetheme1() {
+            document.body.classList.remove('dark-theme');
+        }
+
+        function changetheme2() {
+            document.body.classList.add('dark-theme');
+        }
+    </script>
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script> -->
+</body>
+
+</html>
