@@ -1,0 +1,64 @@
+* {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+#header {
+    background-color: black;
+    color: white;
+    padding: 10px;
+    height: 5rem;
+    font-size: 40px;
+    line-height: 5rem;
+    border: 3px solid blue;
+    margin-top: 2px;
+}
+
+#options {
+    background-color: yellow;
+    padding: 50px;
+    margin-top: 20px;
+    visibility: hidden; 
+    /* Initially hidden */
+}
+
+.option-tray1,
+.option-tray2 {
+    display: flex;
+    gap: 20px;
+    margin: 20px;
+    justify-content: center;
+}
+
+.emoji-box {
+    height: 60px;
+    width: 60px;
+    background-color: skyblue;
+    border-radius: 5px;
+    display: flex; /* Flex to center content */
+    justify-content: center;
+    align-items: center;
+}
+
+.emoji-box:hover {
+    background-color: orange;
+}
+
+.image {
+    height: 50px;
+    width: 50px;
+    object-fit: cover;
+}
+
+.button1 {
+    background-color: #EA4C89;
+    border-radius: 8px;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    height: 40px;
+    padding: 10px 16px;
+    margin: 20px;
+}
