@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!--  <link href="style.css" rel="stylesheet" -->
+    <meta name="viewport" content="width= device-width, initial-scale= 1.0">
+    <title>Sasta Cricket</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        #header {
+
+            background-color: black;
+            color: white;
+            padding: 10px;
+
+            height: 5rem;
+            font-size: 40px;
+            line-height: 5rem;
+            border: 3px solid blue;
+            margin-top: 2px;
+
+        }
+
+        #options {
+            background-color: yellow;
+
+            padding: 50px;
+            margin: 220px;
+
+
+        }
+
+        .option-tray1,
+        .option-tray2 {
+
+            display: flex;
+            gap: 20px;
+            margin: 20px;
+            justify-content: center;
+        }
+
+        .emoji {
+            height: 60px;
+            width: 60px;
+            background-color: skyblue;
+            border-radius: 5px;
+            justify-content: center;
+            align-items: center;
+            align-items: center;
+        }
+
+        .emoji:hover {
+            background-color: orange;
+        }
+
+        p {
+            height: 50px;
+            width: 50px;
+            object-fit: cover;
+            font-size: 30px;
+            text-align: center;
+            line-height: 50px;
+        }
+
+        #msg {
+            margin-top: 5px;
+            background-color: skyblue;
+            font-size: 30px;
+            display: inline;
+            padding: 8px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="header">
+        Sasta Cricket
+    </div>
+
+    <div id="options">
+        <div class="option-tray1">
+            <div class="emoji">
+                <p>☝️</p>
+            </div>
+            <div class="emoji">
+                <p>✌🏻</p>
+            </div>
+        </div>
+        <div class="option-tray2">
+            <div class="emoji">
+                <p>🖐️</p>
+            </div>
+            <div class="emoji">
+                <p>👍🏻</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="msg">
+
+
+
+    </div>
+
+
+    <script>
+        const emoji = document.querySelectorAll(".emoji");
+        const msg = document.querySelector("#msg");
+        emoji.forEach((value) => {
+
+            value.addEventListener("click",
+                () => {
+
+                    const text = value.innerText;
+                    msg.innerText = text + " was clicked";
+                })
+        })
+
+    </script>
+</body>
+
+</html>
