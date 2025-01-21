@@ -53,7 +53,9 @@
     height: 50px;
     width: 50px;
     object-fit: cover;
+    transform: scaleY(-1); /* Inverts the image vertically */
 }
+
 .image {
     height: 50px;
     width: 50px;
@@ -88,63 +90,94 @@
     text-transform: uppercase;
 }
 
-/* Modal Styles */
+/* Modal styling */
 .modal {
     display: none; /* Hidden by default */
     position: fixed;
-    z-index: 1; /* Sit on top */
+    z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Black w/ transparency */
-    backdrop-filter: blur(5px); /* Blur the background */
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
+/* Modal content box */
 .modal-content {
-    background-color: white;
-    margin: 10% auto;
+    background-color: #fff;
+    margin: 15% auto;
     padding: 20px;
-    border-radius: 8px;
-    width: 60%;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 600px;
+    font-family: Arial, sans-serif;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.modal-content h2 {
-    font-size: 32px; /* Increased font size for the title */
-    margin-bottom: 20px; /* Add some space below the title */
-}
-
-.modal-content p {
-    font-size: 18px; /* Increased font size for the paragraph text */
-    line-height: 1.8; /* Increased line spacing */
-    margin-bottom: 10px; /* Add some space below each paragraph */
-}
-
-.modal-content ul {
-    font-size: 18px; /* Increased font size for the list items */
-    line-height: 1.8; /* Increased line spacing for the list */
-}
-
-.modal-content ul li {
-    margin-bottom: 10px; /* Add space between list items */
-}
-
-
+/* Close button */
 .close-btn {
     color: #aaa;
-    font-size: 28px;
+    float: right;
+    font-size: 24px;
     font-weight: bold;
-    position: absolute;
-    top: 10px;
-    right: 20px;
+    cursor: pointer;
 }
 
 .close-btn:hover,
 .close-btn:focus {
-    color: black;
+    color: #000;
     text-decoration: none;
-    cursor: pointer;
 }
+
+/* Modal heading */
+.modal-content h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+}
+
+/* Modal list styling */
+.modal-content ul {
+    list-style-type: disc; /* Adds bullet points */
+    padding-left: 20px;
+    font-size: 1em;
+    color: #555;
+}
+
+.modal-content ul li {
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+/* Inner list for emojis */
+.modal-content ul ul {
+    list-style-type: none; /* Removes default bullets from the emoji sublist */
+    padding-left: 0;
+}
+
+.modal-content ul ul li {
+    font-size: 1.2em;
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+/* Emoji images */
+.modal-content ul ul li img {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+    vertical-align: middle;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 2px;
+    background-color: #f9f9f9;
+}
+
+
 
 #scoreBoard
 {
