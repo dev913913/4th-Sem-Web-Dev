@@ -19,7 +19,7 @@
     background-color: yellow;
     padding: 50px;
     margin-top: 20px;
-    visibility: hidden; 
+    visibility: hidden;
     /* Initially hidden */
 }
 
@@ -36,7 +36,7 @@
     width: 60px;
     background-color: skyblue;
     border-radius: 5px;
-    display: flex; /* Flex to center content */
+    display: flex;
     justify-content: center;
     align-items: center;
 }
@@ -61,4 +61,68 @@
     height: 40px;
     padding: 10px 16px;
     margin: 20px;
+}
+
+#buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Black w/ transparency */
+    backdrop-filter: blur(5px); /* Blur the background */
+}
+
+.modal-content {
+    background-color: white;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 60%;
+}
+
+.modal-content h2 {
+    font-size: 32px; /* Increased font size for the title */
+    margin-bottom: 20px; /* Add some space below the title */
+}
+
+.modal-content p {
+    font-size: 18px; /* Increased font size for the paragraph text */
+    line-height: 1.8; /* Increased line spacing */
+    margin-bottom: 10px; /* Add some space below each paragraph */
+}
+
+.modal-content ul {
+    font-size: 18px; /* Increased font size for the list items */
+    line-height: 1.8; /* Increased line spacing for the list */
+}
+
+.modal-content ul li {
+    margin-bottom: 10px; /* Add space between list items */
+}
+
+
+.close-btn {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
 }
