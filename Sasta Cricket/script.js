@@ -9,12 +9,26 @@
 //     })
 // })
 
+let user_score = 0;
+let comp_score = 0
+
+const imagePaths = {
+    1: "assets/1.png",
+    2: "assets/2.png",
+    3: "assets/3.png",
+    4: "assets/4.png",
+    5: "assets/5.png",
+    6: "assets/6.png"
+};
 
 document.addEventListener("DOMContentLoaded", function () {
     // Show the game options when Start is clicked
     document.getElementById("start-button").addEventListener("click", function () {
-        const options = document.getElementById("options");
-        options.style.visibility = "visible";
+        const options = document.querySelectorAll(".options");
+        options.forEach(option => {
+            option.style.visibility = "visible";
+        });
+
     });
 
     // Show the help modal when Help is clicked
@@ -39,28 +53,41 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 const emoji = document.querySelectorAll(".image");
+const comp_emoji = document.querySelector(".comp_image");
+const scoreBoard = document.querySelector("#scoreBoard");
 
-function genCompChoice()
-{
+function genCompChoice() {
     return (Math.floor(Math.random() * 6)) + 1;
 }
 
-function match(user_choice)
-{
+
+
+function match(user_choice) {
     let comp_choice = genCompChoice();
-    if(comp_choice == user_choice)
-    {
-        console.log('You are out bcs comps choice: ' + comp_choice + ' and yours: ' + user_choice);
-    }
-    else
-        {
-            console.log('You are not out bcs comps choice: ' + comp_choice + ' and yours: ' + user_choice);
+
+    let a = imagePaths[comp_choice];
+
+    // Wait for 2 seconds
+    setTimeout(() => {
+        comp_emoji.setAttribute('src', a); // Set computer's choice image
+
+        if (comp_choice == user_choice) {
+            // When user is out, show the current score without change
+            scoreBoard.innerText = 'Your Score: ' + user_score + ' | Comp\'s Score:  ' + comp_score;
+            console.log('You are out!');
+        } else {
+            // Update user's score
+            user_score += user_choice;
+
+            scoreBoard.innerText = 'Your Score: ' + user_score + ' | Comp\'s Score:  ' + comp_score;
         }
+    }, 2000); // 2-second delay
 }
 
 emoji.forEach((value) => {
-        value.addEventListener("click", () => {
-            let user_choice = value.getAttribute("id");
-           match(user_choice);
-        })
-    })
+    value.addEventListener("click", () => {
+        let user_choice = value.getAttribute("id");
+        let num = Number(user_choice); 
+        match(num);
+    });
+});

@@ -15,12 +15,15 @@
     margin-top: 2px;
 }
 
-#options {
+.options {
     background-color: yellow;
     padding: 50px;
     margin-top: 20px;
     visibility: hidden;
     /* Initially hidden */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .option-tray1,
@@ -39,12 +42,18 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: background-color 0.3s ease; /* Added smooth transition */
 }
 
 .emoji-box:hover {
     background-color: orange;
 }
 
+.comp_image {
+    height: 50px;
+    width: 50px;
+    object-fit: cover;
+}
 .image {
     height: 50px;
     width: 50px;
@@ -67,6 +76,16 @@
     display: flex;
     justify-content: center;
     gap: 10px;
+}
+
+/* Title Styling for Choices */
+#comp-choice-title,
+#user-choice-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    text-transform: uppercase;
 }
 
 /* Modal Styles */
@@ -125,4 +144,15 @@
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+#scoreBoard
+{
+    margin-top: 5px;
+    background-color: skyblue;
+    font-size: 30px;
+    display: inline;
+    padding: 8px;
+    border-radius: 5px;
+    
 }

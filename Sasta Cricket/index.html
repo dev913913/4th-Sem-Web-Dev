@@ -9,37 +9,47 @@
 <body>
     <div id="header">Sasta Cricket</div>
 
+
     <!-- Start and Help Buttons -->
     <div id="buttons-container">
         <button class="button1" id="start-button" role="button">Start Game</button>
         <button class="button1" id="help-button" role="button">Rules</button>
     </div>
 
-    <!-- Options (Initially Hidden) -->
-    <div id="options">
-        <div class="option-tray1">
-            <div class="emoji-box">
-                <img class="image" id="1" src="assets/1.png" alt="one">
-            </div>
-            <div class="emoji-box">
-                <img class="image" id="2" src="assets/2.png" alt="two">
-            </div>
-            <div class="emoji-box">
-                <img class="image" id="3" src="assets/3.png" alt="three">
-            </div>
+
+    <p id="comp-choice-title">Comp's Choice:</p>
+<div class="options">
+    <div class="emoji-box">
+        <img class="comp_image" src="assets/0.png" alt="one">
+    </div>
+</div>
+
+<p id="user-choice-title">User's Choice:</p>
+<div class="options">
+    <div class="option-tray1">
+        <div class="emoji-box">
+            <img class="image" id="1" src="assets/1.png" alt="one">
         </div>
-        <div class="option-tray2">
-            <div class="emoji-box">
-                <img class="image" id="4" src="assets/4.png" alt="four">
-            </div>
-            <div class="emoji-box">
-                <img class="image" id="5" src="assets/5.png" alt="five">
-            </div>
-            <div class="emoji-box">
-                <img class="image" id="6" src="assets/6.png" alt="six">
-            </div>
+        <div class="emoji-box">
+            <img class="image" id="2" src="assets/2.png" alt="two">
+        </div>
+        <div class="emoji-box">
+            <img class="image" id="3" src="assets/3.png" alt="three">
         </div>
     </div>
+    <div class="option-tray2">
+        <div class="emoji-box">
+            <img class="image" id="4" src="assets/4.png" alt="four">
+        </div>
+        <div class="emoji-box">
+            <img class="image" id="5" src="assets/5.png" alt="five">
+        </div>
+        <div class="emoji-box">
+            <img class="image" id="6" src="assets/6.png" alt="six">
+        </div>
+    </div>
+</div>
+
 
     <!-- Modal for Help -->
     <div id="help-modal" class="modal">
@@ -57,6 +67,10 @@
         </div>
     </div>
 
+
+    <div id="scoreBoard">
+        Score Board
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
