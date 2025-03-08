@@ -28,55 +28,35 @@ function play() {
 
     scoreBoard.innerText = 'Your Score: ' + user_score + ' | Comp\'s Score:  ' + comp_score;
 
+    // This should be outside the match function
+    emoji.forEach((value) => {
+        value.addEventListener("click", () => {
+            clickSound.play();
+            let user_choice = value.getAttribute("id");
+            let num = Number(user_choice);
+            match(num);  // Call match on click
+        });
+    });
+
     function match(user_choice) {
         let comp_choice = genCompChoice();
         let a = imagePaths[comp_choice];
+        comp_emoji.setAttribute('src', a);
 
-        // Play cycle sound
-        cycleSound.play();
-
-        // To create the effect of cycling through images
-        let count = 0;
-        let cycleDuration = 40; // Set to 40 iterations for 4 seconds (40 * 100ms = 4000ms)
-        let cycleInterval = setInterval(() => {
-            // Generate a random choice to show during the cycle
-            let randomChoice = Math.floor(Math.random() * 6) + 1;
-            comp_emoji.setAttribute('src', imagePaths[randomChoice]);
-
-            count++;
-            if (count >= cycleDuration) { // 4 seconds
-                clearInterval(cycleInterval); // Stop the cycle
-                comp_emoji.setAttribute('src', a); // Show the final choice
-
-                // Play the choice sound after cycling
-                choiceSound.play();
-
-                // Now that the cycling is done, update the score
-                if (comp_choice === user_choice) {
-                    // When user is out, show the current score without change
-                    scoreBoard.innerText = 'You are out at ' + user_score;
-                    outSound.play(); // Play the out sound
-                    user_score = 0;
-                    comp_score = 0;
-                } else {
-                    // Update user's score
-                    user_score += user_choice;
-                    scoreboardSound.play(); // Play scoreboard update sound
-                    scoreBoard.innerText = 'Your Score: ' + user_score + ' | Comp\'s Score:  ' + comp_score;
-                }
-            }
-        }, 100); // 100ms interval for cycling effect
+        // Here you can implement the score calculation and cycling effect if needed
+        if (comp_choice === user_choice) {
+            scoreBoard.innerText = 'You are out at ' + user_score;
+            outSound.play();
+            user_score = 0;
+            comp_score = 0;
+        } else {
+            user_score += 1; // Score logic update
+            scoreboardSound.play();
+            scoreBoard.innerText = 'Your Score: ' + user_score + ' | Comp\'s Score:  ' + comp_score;
+        }
     }
-
-    emoji.forEach((value) => {
-        value.addEventListener("click", () => {
-            clickSound.play(); // Play the click sound
-            let user_choice = value.getAttribute("id");
-            let num = Number(user_choice);
-            match(num);  // Call the match function when a user choice is made
-        });
-    });
 }
+
 
 document.addEventListener("DOMContentLoaded", function () {
     // Show the game options when Start is clicked
