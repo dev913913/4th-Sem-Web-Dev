@@ -50,7 +50,7 @@ function play() {
             user_score = 0;
             comp_score = 0;
         } else {
-            user_score += 1; // Score logic update
+            user_score += user_choice; // Score logic update
             scoreboardSound.play();
             scoreBoard.innerText = 'Your Score: ' + user_score + ' | Comp\'s Score:  ' + comp_score;
         }
