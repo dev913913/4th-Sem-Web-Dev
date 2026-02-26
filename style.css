@@ -1,191 +1,202 @@
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: linear-gradient(145deg, #0f172a, #1e293b);
+    color: #e2e8f0;
+    padding: 20px;
+}
+
+.top-bar {
     text-align: center;
+    margin-bottom: 20px;
 }
 
-#header {
-    background-color: black;
-    color: white;
+.top-bar h1 {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    color: #38bdf8;
+}
+
+.top-bar p {
+    margin-top: 6px;
+    color: #cbd5e1;
+}
+
+.container {
+    max-width: 980px;
+    margin: 0 auto;
+    display: grid;
+    gap: 16px;
+}
+
+.panel {
+    background: #111827;
+    border: 1px solid #334155;
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.controls h2,
+.score-panel h2 {
+    margin-bottom: 8px;
+}
+
+#status-text {
+    margin-bottom: 12px;
+    color: #93c5fd;
+}
+
+.button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.small-gap {
+    margin-bottom: 0;
+}
+
+.button {
+    border: 0;
+    background: #0284c7;
+    color: #fff;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.button:hover {
+    filter: brightness(1.08);
+}
+
+.button.alt {
+    background: #7c3aed;
+}
+
+.button.role {
+    background: #16a34a;
+}
+
+.button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+#scoreBoard {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    color: #f8fafc;
+    background: #0f172a;
+    border: 1px solid #1e40af;
+    border-radius: 10px;
     padding: 10px;
-    height: 5rem;
-    font-size: 40px;
-    line-height: 5rem;
-    border: 3px solid blue;
-    margin-top: 2px;
 }
 
-.options {
-    background-color: yellow;
-    padding: 50px;
-    margin-top: 20px;
-    visibility: hidden;
-    /* Initially hidden */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 8px;
+    font-size: 0.95rem;
+    color: #cbd5e1;
 }
 
-.option-tray1,
-.option-tray2 {
-    display: flex;
-    gap: 20px;
-    margin: 20px;
-    justify-content: center;
+.choice-title {
+    margin: 12px 0 8px;
+    font-weight: 700;
+    color: #bfdbfe;
 }
 
-.emoji-box {
-    height: 60px;
-    width: 60px;
-    background-color: skyblue;
-    border-radius: 5px;
+.choice-box {
     display: flex;
     justify-content: center;
-    align-items: center;
-    transition: background-color 0.3s ease; /* Added smooth transition */
-}
-
-.emoji-box:hover {
-    background-color: orange;
 }
 
 .comp_image {
-    height: 50px;
-    width: 50px;
-    object-fit: cover;
-    transform: scaleY(-1); /* Inverts the image vertically */
+    width: 72px;
+    height: 72px;
+    border-radius: 10px;
+    background: #1e3a8a;
+    padding: 8px;
+    border: 1px solid #60a5fa;
 }
 
-.image {
-    height: 50px;
-    width: 50px;
-    object-fit: cover;
-}
-
-.button1 {
-    background-color: #EA4C89;
-    border-radius: 8px;
-    color: #FFFFFF;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    height: 40px;
-    padding: 10px 16px;
-    margin: 20px;
-}
-
-#buttons-container {
-    display: flex;
-    justify-content: center;
+.option-grid {
+    margin-top: 8px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(70px, 1fr));
     gap: 10px;
 }
 
-/* Title Styling for Choices */
-#comp-choice-title,
-#user-choice-title {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    margin-top: 10px;
-    text-transform: uppercase;
-}
-
-/* Modal styling */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.5);
-}
-
-/* Modal content box */
-.modal-content {
-    background-color: #fff;
-    margin: 15% auto;
-    padding: 20px;
+.emoji-box {
+    border: 1px solid #334155;
+    background: #1e293b;
     border-radius: 10px;
-    width: 80%;
-    max-width: 600px;
-    font-family: Arial, sans-serif;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 8px;
+    cursor: pointer;
+    transition: transform 0.12s ease, background 0.2s ease;
 }
 
-/* Close button */
+.emoji-box:hover:not(:disabled) {
+    transform: translateY(-2px);
+    background: #334155;
+}
+
+.emoji-box:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.image {
+    width: 52px;
+    height: 52px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+}
+
+.modal-content {
+    max-width: 640px;
+    background: #f8fafc;
+    color: #0f172a;
+    margin: 10vh auto;
+    border-radius: 12px;
+    padding: 18px 20px;
+    position: relative;
+}
+
+.modal-content ul {
+    margin-left: 20px;
+    line-height: 1.6;
+}
+
 .close-btn {
-    color: #aaa;
-    float: right;
-    font-size: 24px;
-    font-weight: bold;
+    position: absolute;
+    right: 14px;
+    top: 10px;
+    font-size: 1.6rem;
     cursor: pointer;
 }
 
-.close-btn:hover,
-.close-btn:focus {
-    color: #000;
-    text-decoration: none;
-}
+@media (max-width: 640px) {
+    body {
+        padding: 12px;
+    }
 
-/* Modal heading */
-.modal-content h2 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 20px;
-    font-size: 1.8em;
-}
-
-/* Modal list styling */
-.modal-content ul {
-    list-style-type: disc; /* Adds bullet points */
-    padding-left: 20px;
-    font-size: 1em;
-    color: #555;
-}
-
-.modal-content ul li {
-    margin-bottom: 10px;
-    line-height: 1.5;
-}
-
-/* Inner list for emojis */
-.modal-content ul ul {
-    list-style-type: none; /* Removes default bullets from the emoji sublist */
-    padding-left: 0;
-}
-
-.modal-content ul ul li {
-    font-size: 1.2em;
-    display: flex;
-    align-items: center;
-    margin-bottom: 5px;
-}
-
-/* Emoji images */
-.modal-content ul ul li img {
-    width: 24px;
-    height: 24px;
-    margin-right: 10px;
-    vertical-align: middle;
-    display: inline-block;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 2px;
-    background-color: #f9f9f9;
-}
-
-
-
-#scoreBoard
-{
-    margin-top: 5px;
-    background-color: skyblue;
-    font-size: 30px;
-    display: inline;
-    padding: 8px;
-    border-radius: 5px;
-    
+    .image {
+        width: 45px;
+        height: 45px;
+    }
 }
