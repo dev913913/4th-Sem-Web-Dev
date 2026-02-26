@@ -37,7 +37,8 @@ let state = {
     target: null,
     balls: 0,
     gameOver: false,
-    resolvingBall: false
+    resolvingBall: false,
+    turnToken: 0
 };
 
 function genCompChoice() {
@@ -77,6 +78,16 @@ function setPlayButtons(enabled) {
     });
 }
 
+function safePlay(sound) {
+    sound.currentTime = 0;
+    const maybePromise = sound.play();
+    if (maybePromise && typeof maybePromise.catch === "function") {
+        maybePromise.catch(() => {
+            // Autoplay can be blocked by the browser before first interaction.
+        });
+    }
+}
+
 function resetMatch(userBattingFirst = true) {
     state = {
         started: true,
@@ -87,7 +98,8 @@ function resetMatch(userBattingFirst = true) {
         target: null,
         balls: 0,
         gameOver: false,
-        resolvingBall: false
+        resolvingBall: false,
+        turnToken: 0
     };
 
     compEmoji.setAttribute("src", "assets/0.png");
@@ -136,8 +148,7 @@ function completeMatch() {
 }
 
 function switchInnings(outMessage) {
-    outSound.currentTime = 0;
-    outSound.play();
+    safePlay(outSound);
 
     if (state.innings === 1) {
         state.innings = 2;
@@ -155,38 +166,41 @@ function switchInnings(outMessage) {
     completeMatch();
 }
 
-async function animateComputerHand(finalChoice) {
+async function animateComputerHand(finalChoice, token) {
     revealHint.textContent = "Computer is choosing...";
     compChoiceBox.classList.add("shake");
 
-    cycleSound.currentTime = 0;
-    cycleSound.play();
+    safePlay(cycleSound);
 
     for (let i = 0; i < 6; i += 1) {
+        if (token !== state.turnToken) return false;
         const teaseChoice = genCompChoice();
         compEmoji.setAttribute("src", imagePaths[teaseChoice]);
         await wait(95);
     }
 
     await wait(120);
+    if (token !== state.turnToken) return false;
     compEmoji.setAttribute("src", imagePaths[finalChoice]);
     compChoiceBox.classList.remove("shake");
 
-    choiceSound.currentTime = 0;
-    choiceSound.play();
+    safePlay(choiceSound);
     revealHint.textContent = "Revealed!";
+    return true;
 }
 
 async function playBall(userChoice) {
     if (!state.started || state.gameOver || state.resolvingBall) return;
     state.resolvingBall = true;
 
-    clickSound.currentTime = 0;
-    clickSound.play();
+    safePlay(clickSound);
 
     setPlayButtons(false);
+    state.turnToken += 1;
+    const token = state.turnToken;
     const compChoice = genCompChoice();
-    await animateComputerHand(compChoice);
+    const resolved = await animateComputerHand(compChoice, token);
+    if (!resolved) return;
 
     state.balls += 1;
 
@@ -200,8 +214,7 @@ async function playBall(userChoice) {
         return;
     }
 
-    scoreboardSound.currentTime = 0;
-    scoreboardSound.play();
+    safePlay(scoreboardSound);
 
     if (userBattingThisInnings) {
         state.userScore += userChoice;
@@ -231,6 +244,8 @@ async function playBall(userChoice) {
 }
 
 startBtn.addEventListener("click", () => {
+    state.turnToken += 1;
+    compChoiceBox.classList.remove("shake");
     setRoleButtons(true);
     setPlayButtons(false);
     state.started = false;
