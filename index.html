@@ -42,7 +42,11 @@
                 <div class="step-line"></div>
                 <div class="step step-2">○ 2nd Innings</div>
             </div>
-            <div id="scoreBoard" aria-live="polite">You: 0 | Comp: 0 | Target: —</div>
+            <div id="scoreBoard" class="scoreboard" aria-live="polite" aria-atomic="true">
+                <div class="score-item"><span class="score-label">You</span><strong id="score-you">0</strong></div>
+                <div class="score-item"><span class="score-label">Comp</span><strong id="score-comp">0</strong></div>
+                <div class="score-item"><span class="score-label">Target</span><strong id="score-target">—</strong></div>
+            </div>
             <div id="chase-info" class="chase-info" hidden>Need 0 runs</div>
             <div class="meta-pills">
                 <span class="pill"><strong>Balls:</strong> <span id="balls">0</span></span>
@@ -51,6 +55,7 @@
             <div class="choice-box">
                 <img class="comp_image" src="assets/0.png" alt="computer choice">
             </div>
+            <div id="feedback-banner" class="feedback-banner" aria-live="polite">Pick a run to play the ball.</div>
             <div id="last-ball" class="last-ball">Last ball: —</div>
             <div id="innings-overlay" class="innings-overlay" hidden>
                 <p id="overlay-out" class="overlay-out">OUT!</p>
