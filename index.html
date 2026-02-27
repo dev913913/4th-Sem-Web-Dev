@@ -21,22 +21,26 @@
             <div class="button-row">
                 <button class="button" id="start-button">Start New Match</button>
                 <button class="button alt" id="help-button">Rules</button>
+                <button class="button ghost" id="mute-button" aria-pressed="false">🔊 Sound On</button>
             </div>
             <div class="button-row small-gap">
                 <button class="button role" id="bat-first">Bat First</button>
                 <button class="button role" id="bowl-first">Bowl First</button>
             </div>
+            <p class="hint-text">Tip: Use keyboard <strong>1-6</strong> to play runs.</p>
         </section>
 
         <section class="panel score-panel">
             <h2>Scoreboard</h2>
-            <div id="scoreBoard">Press Start New Match</div>
+            <div id="scoreBoard" aria-live="polite">Press Start New Match</div>
+            <div id="chase-info" class="chase-info" hidden>Need 0 runs</div>
             <div class="meta-grid">
                 <p><strong>Phase:</strong> <span id="phase">Not started</span></p>
                 <p><strong>Balls:</strong> <span id="balls">0</span></p>
                 <p><strong>Current:</strong> <span id="current-run-rate">0.00</span></p>
                 <p><strong>Best:</strong> <span id="best-score">0</span></p>
             </div>
+            <div id="last-ball" class="last-ball">Last ball: —</div>
         </section>
 
         <section class="panel choices-panel">
@@ -47,12 +51,12 @@
 
             <div class="choice-title">Your Choice</div>
             <div class="option-grid" id="player-options">
-                <button class="emoji-box" data-run="1"><img class="image" src="assets/1.png" alt="one"></button>
-                <button class="emoji-box" data-run="2"><img class="image" src="assets/2.png" alt="two"></button>
-                <button class="emoji-box" data-run="3"><img class="image" src="assets/3.png" alt="three"></button>
-                <button class="emoji-box" data-run="4"><img class="image" src="assets/4.png" alt="four"></button>
-                <button class="emoji-box" data-run="5"><img class="image" src="assets/5.png" alt="five"></button>
-                <button class="emoji-box" data-run="6"><img class="image" src="assets/6.png" alt="six"></button>
+                <button class="emoji-box" data-run="1" aria-label="Play run 1"><img class="image" src="assets/1.png" alt="one"></button>
+                <button class="emoji-box" data-run="2" aria-label="Play run 2"><img class="image" src="assets/2.png" alt="two"></button>
+                <button class="emoji-box" data-run="3" aria-label="Play run 3"><img class="image" src="assets/3.png" alt="three"></button>
+                <button class="emoji-box" data-run="4" aria-label="Play run 4"><img class="image" src="assets/4.png" alt="four"></button>
+                <button class="emoji-box" data-run="5" aria-label="Play run 5"><img class="image" src="assets/5.png" alt="five"></button>
+                <button class="emoji-box" data-run="6" aria-label="Play run 6"><img class="image" src="assets/6.png" alt="six"></button>
             </div>
         </section>
     </main>
