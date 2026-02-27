@@ -4,73 +4,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emo Cricket Pro</title>
+    <title>Emo Cricket</title>
     <link href="style.css" rel="stylesheet">
 </head>
 
 <body>
-    <header class="top-bar">
-        <h1>🏏 Emo Cricket Pro</h1>
-        <p>Hand Cricket with innings, target chase, and smart match flow.</p>
-    </header>
+    <div id="header">Emo Cricket</div>
 
-    <main class="container">
-        <section class="panel controls">
-            <h2>Start Match</h2>
-            <p id="status-text">Choose your role to begin.</p>
-            <div class="button-row">
-                <button class="button" id="start-button">Start New Match</button>
-                <button class="button alt" id="help-button">Rules</button>
-            </div>
-            <div class="button-row small-gap">
-                <button class="button role" id="bat-first">Bat First</button>
-                <button class="button role" id="bowl-first">Bowl First</button>
-            </div>
-        </section>
 
-        <section class="panel score-panel">
-            <h2>Scoreboard</h2>
-            <div id="scoreBoard">Press Start New Match</div>
-            <div class="meta-grid">
-                <p><strong>Phase:</strong> <span id="phase">Not started</span></p>
-                <p><strong>Balls:</strong> <span id="balls">0</span></p>
-                <p><strong>Current:</strong> <span id="current-run-rate">0.00</span></p>
-                <p><strong>Best:</strong> <span id="best-score">0</span></p>
-            </div>
-        </section>
+    <!-- Start and Help Buttons -->
+    <div id="buttons-container">
+        <button class="button1" id="start-button" role="button">Start Game</button>
+        <button class="button1" id="help-button" role="button">Rules</button>
+    </div>
 
-        <section class="panel choices-panel">
-            <div class="choice-title">Computer's Choice</div>
-            <div class="choice-box">
-                <img class="comp_image" src="assets/0.png" alt="computer choice">
-            </div>
 
-            <div class="choice-title">Your Choice</div>
-            <div class="option-grid" id="player-options">
-                <button class="emoji-box" data-run="1"><img class="image" src="assets/1.png" alt="one"></button>
-                <button class="emoji-box" data-run="2"><img class="image" src="assets/2.png" alt="two"></button>
-                <button class="emoji-box" data-run="3"><img class="image" src="assets/3.png" alt="three"></button>
-                <button class="emoji-box" data-run="4"><img class="image" src="assets/4.png" alt="four"></button>
-                <button class="emoji-box" data-run="5"><img class="image" src="assets/5.png" alt="five"></button>
-                <button class="emoji-box" data-run="6"><img class="image" src="assets/6.png" alt="six"></button>
-            </div>
-        </section>
-    </main>
+    <p id="comp-choice-title">Comp's Choice:</p>
+    <div class="options">
+        <div class="emoji-box">
+            <img class="comp_image" src="assets/0.png" alt="one">
+        </div>
+    </div>
 
-    <div id="help-modal" class="modal" aria-hidden="true">
+    <p id="user-choice-title">User's Choice:</p>
+    <div class="options">
+        <div class="option-tray1">
+            <div class="emoji-box">
+                <img class="image" id="1" src="assets/1.png" alt="one">
+            </div>
+            <div class="emoji-box">
+                <img class="image" id="2" src="assets/2.png" alt="two">
+            </div>
+            <div class="emoji-box">
+                <img class="image" id="3" src="assets/3.png" alt="three">
+            </div>
+        </div>
+        <div class="option-tray2">
+            <div class="emoji-box">
+                <img class="image" id="4" src="assets/4.png" alt="four">
+            </div>
+            <div class="emoji-box">
+                <img class="image" id="5" src="assets/5.png" alt="five">
+            </div>
+            <div class="emoji-box">
+                <img class="image" id="6" src="assets/6.png" alt="six">
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal for Help -->
+    <div id="help-modal" class="modal">
         <div class="modal-content">
-            <span class="close-btn" aria-label="Close">&times;</span>
-            <h2>How To Play</h2>
+            <span class="close-btn">&times;</span>
+            <h2>Game Rules</h2>
             <ul>
-                <li>Start a new match, then pick <strong>Bat First</strong> or <strong>Bowl First</strong>.</li>
-                <li>Tap a run (1–6) every ball. Computer also picks a number.</li>
-                <li>If both numbers match, striker is <strong>OUT</strong> and innings switches.</li>
-                <li>In second innings, chase target or defend it before getting out.</li>
-                <li>Best score is saved in your browser automatically.</li>
+                <li>Choose an emoji representing numbers 1 to 6:</li>
+                <ul>
+                    <li><img src="assets/1.png" alt="☝️"> for 1</li>
+                    <li><img src="assets/2.png" alt="✌️"> for 2</li>
+                    <li><img src="assets/3.png" alt="🤟"> for 3</li>
+                    <li><img src="assets/4.png" alt="✋"> for 4</li>
+                    <li><img src="assets/5.png" alt="🤚"> for 5</li>
+                    <li><img src="assets/6.png" alt="👍"> for 6</li>
+                </ul> <br>
+                <li>The bowler tries to match their number with the batsman's.</li>
+                <li>If the numbers match, the batsman is out.</li>
+                <li>If the numbers don't match, the batsman's score increases by their number.</li>
+                <li>The game restarts when the Start/Restart button is pressed.</li>
             </ul>
         </div>
     </div>
 
+
+
+    <div id="scoreBoard">
+        Score Board
+    </div>
     <script src="script.js"></script>
 </body>
 
