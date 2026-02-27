@@ -5,51 +5,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emo Cricket Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
 </head>
 
 <body>
-    <header class="top-bar">
-        <h1>🏏 Emo Cricket Pro</h1>
-        <p>Hand Cricket with innings, target chase, and smart match flow.</p>
-    </header>
-
     <main class="container">
-        <section class="panel controls">
-            <h2>Start Match</h2>
+        <section class="panel screen screen--active" data-screen="lobby">
+            <header class="top-bar">
+                <h1>🏏 Emo Cricket Pro</h1>
+                <p>Hand Cricket with innings, target chase, and smart match flow.</p>
+            </header>
             <p id="status-text">Choose your role to begin.</p>
-            <div class="button-row">
-                <button class="button" id="start-button">Start New Match</button>
+            <p class="best-label">Best Score: <span id="best-score">0</span></p>
+            <div id="history-chips" class="history-chips"></div>
+            <div class="button-stack">
+                <button class="button" id="start-button">Start Match</button>
                 <button class="button alt" id="help-button">Rules</button>
                 <button class="button ghost" id="mute-button" aria-pressed="false">🔊 Sound On</button>
-            </div>
-            <div class="button-row small-gap">
-                <button class="button role" id="bat-first">Bat First</button>
-                <button class="button role" id="bowl-first">Bowl First</button>
             </div>
             <p class="hint-text">Tip: Use keyboard <strong>1-6</strong> to play runs.</p>
         </section>
 
-        <section class="panel score-panel">
-            <h2>Scoreboard</h2>
-            <div id="scoreBoard" aria-live="polite">Press Start New Match</div>
-            <div id="chase-info" class="chase-info" hidden>Need 0 runs</div>
-            <div class="meta-grid">
-                <p><strong>Phase:</strong> <span id="phase">Not started</span></p>
-                <p><strong>Balls:</strong> <span id="balls">0</span></p>
-                <p><strong>Current:</strong> <span id="current-run-rate">0.00</span></p>
-                <p><strong>Best:</strong> <span id="best-score">0</span></p>
+        <section class="panel screen" data-screen="role-select">
+            <button class="back-button" id="role-back" aria-label="Back to home">←</button>
+            <h2>Choose your role</h2>
+            <div class="role-stack">
+                <button class="button role" id="bat-first">🏏 Bat First</button>
+                <button class="button role" id="bowl-first">🎳 Bowl First</button>
             </div>
-            <div id="last-ball" class="last-ball">Last ball: —</div>
         </section>
 
-        <section class="panel choices-panel">
-            <div class="choice-title">Computer's Choice</div>
+        <section class="panel screen" data-screen="game">
+            <div class="innings-stepper" id="innings-stepper">
+                <div class="step step-1 active">● 1st Innings</div>
+                <div class="step-line"></div>
+                <div class="step step-2">○ 2nd Innings</div>
+            </div>
+            <div id="scoreBoard" aria-live="polite">You: 0 | Comp: 0 | Target: —</div>
+            <div id="chase-info" class="chase-info" hidden>Need 0 runs</div>
+            <div class="meta-pills">
+                <span class="pill"><strong>Balls:</strong> <span id="balls">0</span></span>
+                <span class="pill"><strong>Run Rate:</strong> <span id="current-run-rate">0.00</span></span>
+            </div>
             <div class="choice-box">
                 <img class="comp_image" src="assets/0.png" alt="computer choice">
             </div>
-
-            <div class="choice-title">Your Choice</div>
+            <div id="last-ball" class="last-ball">Last ball: —</div>
+            <div id="innings-overlay" class="innings-overlay" hidden>
+                <p id="overlay-out" class="overlay-out">OUT!</p>
+                <p id="overlay-score" class="overlay-score">You: 0 | Comp: 0</p>
+                <p class="overlay-next">2nd Innings starting...</p>
+            </div>
             <div class="option-grid" id="player-options">
                 <button class="emoji-box" data-run="1" aria-label="Play run 1"><img class="image" src="assets/1.png" alt="one"></button>
                 <button class="emoji-box" data-run="2" aria-label="Play run 2"><img class="image" src="assets/2.png" alt="two"></button>
@@ -57,6 +64,17 @@
                 <button class="emoji-box" data-run="4" aria-label="Play run 4"><img class="image" src="assets/4.png" alt="four"></button>
                 <button class="emoji-box" data-run="5" aria-label="Play run 5"><img class="image" src="assets/5.png" alt="five"></button>
                 <button class="emoji-box" data-run="6" aria-label="Play run 6"><img class="image" src="assets/6.png" alt="six"></button>
+            </div>
+        </section>
+
+        <section class="panel screen" data-screen="result">
+            <div id="result-emoji" class="result-emoji">🏆</div>
+            <h2 id="result-text">Result</h2>
+            <p id="final-scores">You: 0 | Comp: 0</p>
+            <p id="new-best-banner" class="new-best-banner" hidden>New Best Score! 🎉</p>
+            <div class="button-stack">
+                <button class="button" id="play-again-button">Play Again</button>
+                <button class="button ghost" id="home-button">Home</button>
             </div>
         </section>
     </main>
