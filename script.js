@@ -1,4 +1,5 @@
 const imagePaths = {
+    0: "assets/0.png",
     1: "assets/1.png",
     2: "assets/2.png",
     3: "assets/3.png",
@@ -7,51 +8,67 @@ const imagePaths = {
     6: "assets/6.png"
 };
 
-const screens = document.querySelectorAll(".screen");
-const scoreBoard = document.querySelector("#scoreBoard");
-const statusText = document.querySelector("#status-text");
-const ballsText = document.querySelector("#balls");
-const runRateText = document.querySelector("#current-run-rate");
-const bestScoreText = document.querySelector("#best-score");
-const historyChips = document.querySelector("#history-chips");
-const compEmoji = document.querySelector(".comp_image");
-const optionButtons = document.querySelectorAll(".emoji-box");
-const startBtn = document.querySelector("#start-button");
-const helpBtn = document.querySelector("#help-button");
-const muteBtn = document.querySelector("#mute-button");
-const batFirstBtn = document.querySelector("#bat-first");
-const bowlFirstBtn = document.querySelector("#bowl-first");
-const roleBackBtn = document.querySelector("#role-back");
-const chaseInfo = document.querySelector("#chase-info");
-const lastBall = document.querySelector("#last-ball");
-const helpModal = document.querySelector("#help-modal");
-const closeBtn = document.querySelector(".close-btn");
-const stepOne = document.querySelector(".step-1");
-const stepTwo = document.querySelector(".step-2");
-const inningsOverlay = document.querySelector("#innings-overlay");
-const overlayOut = document.querySelector("#overlay-out");
-const overlayScore = document.querySelector("#overlay-score");
-const resultEmoji = document.querySelector("#result-emoji");
-const resultText = document.querySelector("#result-text");
-const finalScores = document.querySelector("#final-scores");
-const newBestBanner = document.querySelector("#new-best-banner");
-const playAgainBtn = document.querySelector("#play-again-button");
-const homeBtn = document.querySelector("#home-button");
+const STORAGE_KEYS = {
+    sound: "emo-cricket-sound",
+    history: "emo-cricket-history",
+    best: "emo-cricket-best"
+};
 
-const clickSound = new Audio("assets/click.wav");
-const scoreboardSound = new Audio("assets/scoreboard.wav");
-const outSound = new Audio("assets/out.wav");
-const choiceSound = new Audio("assets/choice.wav");
+const TIMING = {
+    revealDelayMs: 220,
+    inningsSwitchMs: 1800,
+    feedbackPulseMs: 420
+};
 
-const SOUND_PREF_KEY = "emo-cricket-sound";
-const HISTORY_KEY = "emo-cricket-history";
+const dom = {
+    screens: document.querySelectorAll(".screen"),
+    statusText: document.querySelector("#status-text"),
+    scoreBoard: document.querySelector("#scoreBoard"),
+    scoreYou: document.querySelector("#score-you"),
+    scoreComp: document.querySelector("#score-comp"),
+    scoreTarget: document.querySelector("#score-target"),
+    ballsText: document.querySelector("#balls"),
+    runRateText: document.querySelector("#current-run-rate"),
+    bestScoreText: document.querySelector("#best-score"),
+    historyChips: document.querySelector("#history-chips"),
+    compEmoji: document.querySelector(".comp_image"),
+    optionGrid: document.querySelector("#player-options"),
+    optionButtons: document.querySelectorAll(".emoji-box"),
+    startBtn: document.querySelector("#start-button"),
+    helpBtn: document.querySelector("#help-button"),
+    muteBtn: document.querySelector("#mute-button"),
+    batFirstBtn: document.querySelector("#bat-first"),
+    bowlFirstBtn: document.querySelector("#bowl-first"),
+    roleBackBtn: document.querySelector("#role-back"),
+    chaseInfo: document.querySelector("#chase-info"),
+    lastBall: document.querySelector("#last-ball"),
+    helpModal: document.querySelector("#help-modal"),
+    closeBtn: document.querySelector(".close-btn"),
+    stepOne: document.querySelector(".step-1"),
+    stepTwo: document.querySelector(".step-2"),
+    inningsOverlay: document.querySelector("#innings-overlay"),
+    overlayOut: document.querySelector("#overlay-out"),
+    overlayScore: document.querySelector("#overlay-score"),
+    resultEmoji: document.querySelector("#result-emoji"),
+    resultText: document.querySelector("#result-text"),
+    finalScores: document.querySelector("#final-scores"),
+    newBestBanner: document.querySelector("#new-best-banner"),
+    playAgainBtn: document.querySelector("#play-again-button"),
+    homeBtn: document.querySelector("#home-button"),
+    feedbackBanner: document.querySelector("#feedback-banner")
+};
 
-let soundEnabled = localStorage.getItem(SOUND_PREF_KEY) === null
-    ? true
-    : localStorage.getItem(SOUND_PREF_KEY) === "true";
+const audio = {
+    click: new Audio("assets/click.wav"),
+    scoreboard: new Audio("assets/scoreboard.wav"),
+    out: new Audio("assets/out.wav"),
+    choice: new Audio("assets/choice.wav")
+};
 
-let state = {
+const gameState = {
+    phase: "lobby", // lobby | role-select | game | result
     started: false,
+    inputLocked: false,
     userBattingFirst: true,
     innings: 1,
     userScore: 0,
@@ -59,37 +76,39 @@ let state = {
     target: null,
     balls: 0,
     gameOver: false,
-    transitioning: false,
     lastUserChoice: null,
-    lastCompChoice: null
+    lastCompChoice: null,
+    soundEnabled: loadSoundPreference(),
+    bestScore: loadBestScore(),
+    pendingTimers: new Set()
 };
 
 function isMobileView() {
     return window.innerWidth < 768;
 }
 
-function showScreen(id) {
-    if (!isMobileView()) return;
-    screens.forEach(screen => {
-        screen.classList.toggle("screen--active", screen.dataset.screen === id);
-    });
+function randomRun() {
+    // Fair and unbiased 1-6 distribution.
+    return crypto.getRandomValues(new Uint32Array(1))[0] % 6 + 1;
 }
 
-function genCompChoice() {
-    return Math.floor(Math.random() * 6) + 1;
+function loadSoundPreference() {
+    const stored = localStorage.getItem(STORAGE_KEYS.sound);
+    return stored === null ? true : stored === "true";
 }
 
 function loadBestScore() {
-    return Number(localStorage.getItem("emo-cricket-best") || 0);
+    return Number(localStorage.getItem(STORAGE_KEYS.best) || 0);
 }
 
 function setBestScore(value) {
-    localStorage.setItem("emo-cricket-best", String(value));
+    gameState.bestScore = value;
+    localStorage.setItem(STORAGE_KEYS.best, String(value));
 }
 
 function loadHistory() {
     try {
-        const parsed = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+        const parsed = JSON.parse(localStorage.getItem(STORAGE_KEYS.history) || "[]");
         return Array.isArray(parsed) ? parsed : [];
     } catch {
         return [];
@@ -99,103 +118,169 @@ function loadHistory() {
 function saveHistory(entry) {
     const history = loadHistory();
     history.unshift(entry);
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, 10)));
+    localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(history.slice(0, 10)));
+}
+
+function clearTimers() {
+    gameState.pendingTimers.forEach(timerId => clearTimeout(timerId));
+    gameState.pendingTimers.clear();
+}
+
+function schedule(callback, delayMs) {
+    const timerId = setTimeout(() => {
+        gameState.pendingTimers.delete(timerId);
+        callback();
+    }, delayMs);
+    gameState.pendingTimers.add(timerId);
+}
+
+function playSound(effect) {
+    if (!gameState.soundEnabled) return;
+    effect.currentTime = 0;
+    effect.play();
+}
+
+function getBattingSideThisInnings() {
+    return (gameState.innings === 1 && gameState.userBattingFirst) ||
+        (gameState.innings === 2 && !gameState.userBattingFirst);
+}
+
+function calculateRunRate() {
+    if (!gameState.started || gameState.balls === 0) return "0.00";
+    const currentBattingScore = getBattingSideThisInnings() ? gameState.userScore : gameState.compScore;
+    return ((currentBattingScore / gameState.balls) * 6).toFixed(2);
+}
+
+function setScreen(screenId) {
+    gameState.phase = screenId;
+    if (!isMobileView()) return;
+
+    dom.screens.forEach(screen => {
+        screen.classList.toggle("screen--active", screen.dataset.screen === screenId);
+    });
+}
+
+function setPlayButtonsEnabled(enabled) {
+    dom.optionButtons.forEach(button => {
+        button.disabled = !enabled;
+    });
+}
+
+function setActiveChoice(userChoice) {
+    dom.optionButtons.forEach(button => {
+        const active = userChoice !== null && Number(button.dataset.run) === userChoice;
+        button.classList.toggle("active", active);
+        button.classList.toggle("pressed", active);
+    });
+}
+
+function pulseScoreboard() {
+    dom.scoreBoard.classList.remove("scoreboard--pulse");
+    void dom.scoreBoard.offsetWidth;
+    dom.scoreBoard.classList.add("scoreboard--pulse");
+}
+
+function setFeedback(message, tone = "neutral") {
+    dom.feedbackBanner.textContent = message;
+    dom.feedbackBanner.dataset.tone = tone;
+    dom.feedbackBanner.classList.add("show");
+
+    schedule(() => {
+        if (!gameState.gameOver) {
+            dom.feedbackBanner.classList.remove("show");
+            dom.feedbackBanner.dataset.tone = "neutral";
+        }
+    }, TIMING.feedbackPulseMs);
 }
 
 function renderHistory() {
     const items = loadHistory().slice(0, 3);
     if (items.length === 0) {
-        historyChips.innerHTML = '<span class="history-chip">No matches yet</span>';
+        dom.historyChips.innerHTML = '<span class="history-chip">No matches yet</span>';
         return;
     }
 
-    historyChips.innerHTML = items.map(item => {
+    dom.historyChips.innerHTML = items.map(item => {
         const emoji = item.result === "win" ? "✅" : item.result === "loss" ? "❌" : "🤝";
         return `<span class="history-chip">${emoji} ${item.userScore}-${item.compScore}</span>`;
     }).join("");
 }
 
-function updateBestScore() {
-    bestScoreText.textContent = loadBestScore();
+function renderLastBall() {
+    if (!gameState.lastUserChoice || !gameState.lastCompChoice) {
+        dom.lastBall.textContent = "Last ball: —";
+        return;
+    }
+    dom.lastBall.textContent = `Last ball: You ${gameState.lastUserChoice} · Comp ${gameState.lastCompChoice}`;
 }
 
-function playSound(audio) {
-    if (!soundEnabled) return;
-    audio.currentTime = 0;
-    audio.play();
+function renderStepper() {
+    const inFirst = gameState.innings === 1;
+    dom.stepOne.classList.toggle("active", inFirst);
+    dom.stepTwo.classList.toggle("active", !inFirst);
+    dom.stepOne.textContent = `${inFirst ? "●" : "○"} 1st Innings`;
+    dom.stepTwo.textContent = `${inFirst ? "○" : "●"} 2nd Innings`;
 }
 
-function formatRunRate() {
-    if (!state.started || state.balls === 0) return "0.00";
-    const userBattingNow = (state.innings === 1 && state.userBattingFirst) ||
-        (state.innings === 2 && !state.userBattingFirst);
-    const score = userBattingNow ? state.userScore : state.compScore;
-    return ((score / state.balls) * 6).toFixed(2);
-}
-
-function setPlayButtons(enabled) {
-    optionButtons.forEach(btn => {
-        btn.disabled = !enabled;
-    });
-}
-
-function updateStepper() {
-    stepOne.classList.toggle("active", state.innings === 1);
-    stepTwo.classList.toggle("active", state.innings === 2);
-    stepOne.textContent = `${state.innings === 1 ? "●" : "○"} 1st Innings`;
-    stepTwo.textContent = `${state.innings === 2 ? "●" : "○"} 2nd Innings`;
-}
-
-function updateChaseInfo() {
-    if (!(state.innings === 2 && state.target)) {
-        chaseInfo.hidden = true;
+function renderChaseInfo() {
+    if (!(gameState.innings === 2 && gameState.target)) {
+        dom.chaseInfo.hidden = true;
         return;
     }
 
-    const chasingScore = state.userBattingFirst ? state.compScore : state.userScore;
-    const need = Math.max(0, state.target - chasingScore);
-    chaseInfo.textContent = need > 0 ? `Need ${need} runs to win` : "Target reached!";
-    chaseInfo.hidden = false;
+    const chasingScore = gameState.userBattingFirst ? gameState.compScore : gameState.userScore;
+    const need = Math.max(0, gameState.target - chasingScore);
+    dom.chaseInfo.textContent = need > 0 ? `Need ${need} runs to win` : "Target reached!";
+    dom.chaseInfo.hidden = false;
 }
 
-function updateLastBallText() {
-    if (!state.lastUserChoice || !state.lastCompChoice) {
-        lastBall.textContent = "Last ball: —";
-        return;
-    }
-    lastBall.textContent = `Last ball: You played ${state.lastUserChoice}, Computer played ${state.lastCompChoice}`;
+function renderScoreboard() {
+    dom.scoreYou.textContent = String(gameState.userScore);
+    dom.scoreComp.textContent = String(gameState.compScore);
+    dom.scoreTarget.textContent = gameState.target ?? "—";
+    dom.ballsText.textContent = String(gameState.balls);
+    dom.runRateText.textContent = calculateRunRate();
+    dom.bestScoreText.textContent = String(gameState.bestScore);
+    renderStepper();
+    renderChaseInfo();
 }
 
-function setActiveChoice(userChoice) {
-    optionButtons.forEach(btn => {
-        if (userChoice === null) {
-            btn.classList.remove("active");
-            return;
-        }
-        btn.classList.toggle("active", Number(btn.dataset.run) === userChoice);
-    });
-}
-
-function renderBoard(message = "") {
-    if (message) {
-        scoreBoard.textContent = message;
-    } else if (!state.started) {
-        scoreBoard.textContent = "You: 0 | Comp: 0 | Target: —";
-    } else {
-        scoreBoard.textContent = `You: ${state.userScore} | Comp: ${state.compScore} | Target: ${state.target ?? "—"}`;
-    }
-
-    ballsText.textContent = String(state.balls);
-    runRateText.textContent = formatRunRate();
-    updateChaseInfo();
-    updateBestScore();
+function renderLobby() {
     renderHistory();
-    updateStepper();
+    dom.statusText.textContent = "Choose your role to begin.";
 }
 
-function resetMatch(userBattingFirst = true) {
-    state = {
+function revealComputerChoice(compChoice) {
+    dom.compEmoji.src = imagePaths[compChoice];
+    dom.compEmoji.classList.remove("pop");
+    void dom.compEmoji.offsetWidth;
+    dom.compEmoji.classList.add("pop");
+}
+
+function resetForRoleSelect() {
+    clearTimers();
+    gameState.started = false;
+    gameState.gameOver = false;
+    gameState.inputLocked = false;
+    gameState.lastUserChoice = null;
+    gameState.lastCompChoice = null;
+
+    setPlayButtonsEnabled(false);
+    setActiveChoice(null);
+    dom.inningsOverlay.hidden = true;
+    dom.compEmoji.src = imagePaths[0];
+    dom.feedbackBanner.textContent = "Pick a run to play the ball.";
+    dom.feedbackBanner.dataset.tone = "neutral";
+    renderLastBall();
+    renderScoreboard();
+}
+
+function startMatch(userBattingFirst) {
+    clearTimers();
+
+    Object.assign(gameState, {
         started: true,
+        inputLocked: false,
         userBattingFirst,
         innings: 1,
         userScore: 0,
@@ -203,235 +288,272 @@ function resetMatch(userBattingFirst = true) {
         target: null,
         balls: 0,
         gameOver: false,
-        transitioning: false,
         lastUserChoice: null,
         lastCompChoice: null
-    };
-    inningsOverlay.hidden = true;
-    compEmoji.setAttribute("src", "assets/0.png");
-    statusText.textContent = userBattingFirst ? "You are batting first. Score big!" : "You are bowling first. Restrict the computer!";
-    setPlayButtons(true);
+    });
+
+    dom.inningsOverlay.hidden = true;
+    dom.compEmoji.src = imagePaths[0];
+    dom.statusText.textContent = userBattingFirst
+        ? "You bat first. Build pressure with big shots!"
+        : "You bowl first. Hunt for an early wicket!";
+
+    setPlayButtonsEnabled(true);
     setActiveChoice(null);
-    updateLastBallText();
-    renderBoard();
-    showScreen("game");
+    renderLastBall();
+    renderScoreboard();
+    setScreen("game");
 }
 
-function completeMatch() {
-    state.gameOver = true;
-    state.started = false;
-    setPlayButtons(false);
+function finalizeMatch() {
+    gameState.gameOver = true;
+    gameState.started = false;
+    gameState.inputLocked = true;
+    setPlayButtonsEnabled(false);
 
     let result = "tie";
     let message = "It's a tie!";
     let emoji = "🤝";
 
-    if (state.userScore > state.compScore) {
+    if (gameState.userScore > gameState.compScore) {
         result = "win";
         message = "You won the match!";
         emoji = "🏆";
-    }
-
-    if (state.userScore < state.compScore) {
+    } else if (gameState.userScore < gameState.compScore) {
         result = "loss";
         message = "Computer won the match.";
-        emoji = "😔";
+        emoji = "💀";
     }
 
-    const oldBest = loadBestScore();
-    const isNewBest = state.userScore > oldBest;
+    const isNewBest = gameState.userScore > gameState.bestScore;
     if (isNewBest) {
-        setBestScore(state.userScore);
+        setBestScore(gameState.userScore);
     }
 
     saveHistory({
         date: new Date().toISOString(),
-        userScore: state.userScore,
-        compScore: state.compScore,
+        userScore: gameState.userScore,
+        compScore: gameState.compScore,
         result,
-        userBatFirst: state.userBattingFirst
+        userBatFirst: gameState.userBattingFirst
     });
 
-    resultEmoji.textContent = emoji;
-    resultText.textContent = message;
-    finalScores.textContent = `Final: You ${state.userScore} | Comp ${state.compScore}`;
-    newBestBanner.hidden = !isNewBest;
-    statusText.textContent = "Press Start Match to play again.";
-    renderBoard(`${message} Final — You: ${state.userScore}, Comp: ${state.compScore}`);
-    showScreen("result");
+    dom.resultEmoji.textContent = emoji;
+    dom.resultText.textContent = message;
+    dom.finalScores.textContent = `Final: You ${gameState.userScore} | Comp ${gameState.compScore}`;
+    dom.newBestBanner.hidden = !isNewBest;
+    dom.statusText.textContent = "Press Start Match to play again.";
+    setFeedback(result === "win" ? "Victory! 🏆" : result === "loss" ? "Defeat! Regroup for the next game." : "Dead even!", result === "win" ? "good" : result === "loss" ? "bad" : "neutral");
+
+    renderHistory();
+    renderScoreboard();
+    setScreen("result");
 }
 
 function beginSecondInnings(outMessage) {
-    state.innings = 2;
-    state.balls = 0;
-    state.target = (state.userBattingFirst ? state.userScore : state.compScore) + 1;
-    state.transitioning = false;
-    statusText.textContent = state.userBattingFirst
-        ? `Computer needs ${state.target} to win.`
-        : `You need ${state.target} to win.`;
-    inningsOverlay.hidden = true;
-    setPlayButtons(true);
-    renderBoard(`${outMessage} Target is ${state.target}.`);
+    gameState.innings = 2;
+    gameState.balls = 0;
+    gameState.target = (gameState.userBattingFirst ? gameState.userScore : gameState.compScore) + 1;
+    gameState.inputLocked = false;
+
+    dom.statusText.textContent = gameState.userBattingFirst
+        ? `Computer needs ${gameState.target}. Defend every run!`
+        : `You need ${gameState.target}. Chase calmly.`;
+
+    dom.inningsOverlay.hidden = true;
+    setPlayButtonsEnabled(true);
+    renderScoreboard();
+    setFeedback(`2nd innings starts. Target: ${gameState.target}`, "neutral");
+    playSound(audio.scoreboard);
+
+    if (outMessage) {
+        dom.lastBall.textContent = outMessage;
+    }
 }
 
 function switchInnings(outMessage) {
-    playSound(outSound);
+    playSound(audio.out);
 
-    if (state.innings === 1) {
-        state.transitioning = true;
-        setPlayButtons(false);
-        overlayOut.textContent = outMessage;
-        overlayScore.textContent = `You: ${state.userScore} | Comp: ${state.compScore}`;
-        inningsOverlay.hidden = false;
-        setTimeout(() => beginSecondInnings(outMessage), 2500);
+    if (gameState.innings === 1) {
+        gameState.inputLocked = true;
+        setPlayButtonsEnabled(false);
+        dom.overlayOut.textContent = outMessage;
+        dom.overlayScore.textContent = `You: ${gameState.userScore} | Comp: ${gameState.compScore}`;
+        dom.inningsOverlay.hidden = false;
+        schedule(() => beginSecondInnings(outMessage), TIMING.inningsSwitchMs);
         return;
     }
 
-    completeMatch();
+    finalizeMatch();
 }
 
-function playBall(userChoice) {
-    if (!state.started || state.gameOver || state.transitioning) return;
+function shouldChaseEnd() {
+    if (!(gameState.innings === 2 && gameState.target)) return false;
 
-    playSound(clickSound);
-
-    const compChoice = genCompChoice();
-    compEmoji.setAttribute("src", imagePaths[compChoice]);
-    compEmoji.classList.add("pop");
-    playSound(choiceSound);
-
-    state.lastUserChoice = userChoice;
-    state.lastCompChoice = compChoice;
-    setActiveChoice(userChoice);
-    state.balls += 1;
-
-    const userBattingThisInnings = (state.innings === 1 && state.userBattingFirst) || (state.innings === 2 && !state.userBattingFirst);
-
-    if (navigator.vibrate) {
-        navigator.vibrate(compChoice === userChoice ? [60, 30, 60] : 30);
+    if (gameState.userBattingFirst) {
+        return gameState.compScore >= gameState.target;
     }
 
+    return gameState.userScore >= gameState.target;
+}
+
+function applyBallResult(userChoice, compChoice) {
+    const userBatting = getBattingSideThisInnings();
+
     if (compChoice === userChoice) {
-        updateLastBallText();
-        const outMessage = userBattingThisInnings ? `You are OUT on ${state.userScore}.` : `Computer is OUT on ${state.compScore}.`;
+        const outMessage = userBatting
+            ? `WICKET! You are out on ${gameState.userScore}.`
+            : `WICKET! Computer is out on ${gameState.compScore}.`;
+
+        setFeedback("WICKET! 💥", "bad");
+        if (navigator.vibrate) navigator.vibrate([50, 20, 80]);
         switchInnings(outMessage);
         return;
     }
 
-    playSound(scoreboardSound);
+    playSound(audio.scoreboard);
 
-    if (userBattingThisInnings) {
-        state.userScore += userChoice;
+    if (userBatting) {
+        gameState.userScore += userChoice;
+        setFeedback(`+${userChoice} runs!`, "good");
     } else {
-        state.compScore += compChoice;
+        gameState.compScore += compChoice;
+        setFeedback(`Computer +${compChoice}`, "bad");
     }
 
-    updateLastBallText();
+    if (navigator.vibrate) navigator.vibrate(20);
 
-    if (state.innings === 2 && state.target) {
-        if (state.userBattingFirst && state.compScore >= state.target) {
-            completeMatch();
-            return;
-        }
-
-        if (!state.userBattingFirst && state.userScore >= state.target) {
-            completeMatch();
-            return;
-        }
+    if (shouldChaseEnd()) {
+        finalizeMatch();
     }
+}
 
-    renderBoard();
+function lockInputForReveal() {
+    gameState.inputLocked = true;
+    setPlayButtonsEnabled(false);
+}
+
+function unlockInputAfterReveal() {
+    if (gameState.gameOver || !gameState.started) return;
+    if (gameState.innings === 1 || !dom.inningsOverlay.hidden) {
+        gameState.inputLocked = false;
+        setPlayButtonsEnabled(true);
+    }
+}
+
+function playBall(userChoice) {
+    if (!gameState.started || gameState.gameOver || gameState.inputLocked) return;
+
+    const compChoice = randomRun();
+    gameState.lastUserChoice = userChoice;
+    gameState.lastCompChoice = compChoice;
+    gameState.balls += 1;
+
+    setActiveChoice(userChoice);
+    renderLastBall();
+    playSound(audio.click);
+    lockInputForReveal();
+
+    setFeedback("...bowler is running in", "neutral");
+
+    schedule(() => {
+        revealComputerChoice(compChoice);
+        playSound(audio.choice);
+        applyBallResult(userChoice, compChoice);
+        renderScoreboard();
+        pulseScoreboard();
+        unlockInputAfterReveal();
+    }, TIMING.revealDelayMs);
 }
 
 function toggleHelpModal(show) {
-    helpModal.style.display = show ? "block" : "none";
-    helpModal.setAttribute("aria-hidden", show ? "false" : "true");
+    dom.helpModal.style.display = show ? "block" : "none";
+    dom.helpModal.setAttribute("aria-hidden", show ? "false" : "true");
 }
 
-startBtn.addEventListener("click", () => {
-    state.started = false;
-    state.gameOver = false;
-    state.transitioning = false;
-    state.lastUserChoice = null;
-    state.lastCompChoice = null;
-    setPlayButtons(false);
-    setActiveChoice(null);
-    updateLastBallText();
-    statusText.textContent = "Select Bat First or Bowl First to begin.";
-    renderBoard();
-    showScreen("role-select");
-});
+function onOptionClick(event) {
+    const button = event.target.closest(".emoji-box");
+    if (!button) return;
+    playBall(Number(button.dataset.run));
+}
 
-roleBackBtn.addEventListener("click", () => {
-    showScreen("lobby");
-});
-
-batFirstBtn.addEventListener("click", () => resetMatch(true));
-bowlFirstBtn.addEventListener("click", () => resetMatch(false));
-
-optionButtons.forEach(button => {
-    button.addEventListener("click", () => {
-        const run = Number(button.dataset.run);
-        playBall(run);
-    });
-});
-
-helpBtn.addEventListener("click", () => {
-    toggleHelpModal(true);
-});
-
-closeBtn.addEventListener("click", () => {
-    toggleHelpModal(false);
-});
-
-window.addEventListener("click", event => {
-    if (event.target === helpModal) toggleHelpModal(false);
-});
-
-muteBtn.addEventListener("click", () => {
-    soundEnabled = !soundEnabled;
-    localStorage.setItem(SOUND_PREF_KEY, String(soundEnabled));
-    muteBtn.textContent = soundEnabled ? "🔊 Sound On" : "🔇 Sound Off";
-    muteBtn.setAttribute("aria-pressed", String(!soundEnabled));
-});
-
-playAgainBtn.addEventListener("click", () => {
-    showScreen("role-select");
-});
-
-homeBtn.addEventListener("click", () => {
-    showScreen("lobby");
-});
-
-document.addEventListener("keydown", event => {
+function onKeyDown(event) {
     if (event.key >= "1" && event.key <= "6") {
         playBall(Number(event.key));
     }
 
-    if (event.key === "Enter" && !state.started) {
-        startBtn.click();
+    if (event.key === "Enter" && !gameState.started) {
+        dom.startBtn.click();
     }
 
     if (event.key === "Escape") {
         toggleHelpModal(false);
     }
-});
+}
 
-compEmoji.addEventListener("animationend", () => {
-    compEmoji.classList.remove("pop");
-});
+function bindEvents() {
+    dom.startBtn.addEventListener("click", () => {
+        resetForRoleSelect();
+        dom.statusText.textContent = "Select Bat First or Bowl First to begin.";
+        setScreen("role-select");
+    });
 
-window.addEventListener("resize", () => {
-    if (!isMobileView()) {
-        screens.forEach(screen => screen.classList.add("screen--active"));
-    } else {
-        if (!document.querySelector(".screen--active")) showScreen("lobby");
-    }
-});
+    dom.roleBackBtn.addEventListener("click", () => setScreen("lobby"));
+    dom.batFirstBtn.addEventListener("click", () => startMatch(true));
+    dom.bowlFirstBtn.addEventListener("click", () => startMatch(false));
+    dom.optionGrid.addEventListener("click", onOptionClick);
 
-muteBtn.textContent = soundEnabled ? "🔊 Sound On" : "🔇 Sound Off";
-muteBtn.setAttribute("aria-pressed", String(!soundEnabled));
-setPlayButtons(false);
-setActiveChoice(null);
-renderBoard();
-showScreen("lobby");
+    dom.helpBtn.addEventListener("click", () => toggleHelpModal(true));
+    dom.closeBtn.addEventListener("click", () => toggleHelpModal(false));
+
+    window.addEventListener("click", event => {
+        if (event.target === dom.helpModal) toggleHelpModal(false);
+    });
+
+    dom.muteBtn.addEventListener("click", () => {
+        gameState.soundEnabled = !gameState.soundEnabled;
+        localStorage.setItem(STORAGE_KEYS.sound, String(gameState.soundEnabled));
+        dom.muteBtn.textContent = gameState.soundEnabled ? "🔊 Sound On" : "🔇 Sound Off";
+        dom.muteBtn.setAttribute("aria-pressed", String(!gameState.soundEnabled));
+    });
+
+    dom.playAgainBtn.addEventListener("click", () => {
+        resetForRoleSelect();
+        setScreen("role-select");
+    });
+
+    dom.homeBtn.addEventListener("click", () => {
+        resetForRoleSelect();
+        renderLobby();
+        setScreen("lobby");
+    });
+
+    document.addEventListener("keydown", onKeyDown);
+
+    dom.compEmoji.addEventListener("animationend", () => {
+        dom.compEmoji.classList.remove("pop");
+    });
+
+    window.addEventListener("resize", () => {
+        if (!isMobileView()) {
+            dom.screens.forEach(screen => screen.classList.add("screen--active"));
+            return;
+        }
+
+        setScreen(gameState.phase || "lobby");
+    });
+}
+
+function init() {
+    bindEvents();
+    dom.muteBtn.textContent = gameState.soundEnabled ? "🔊 Sound On" : "🔇 Sound Off";
+    dom.muteBtn.setAttribute("aria-pressed", String(!gameState.soundEnabled));
+    setPlayButtonsEnabled(false);
+    setActiveChoice(null);
+    renderLobby();
+    renderLastBall();
+    renderScoreboard();
+    setScreen("lobby");
+}
+
+init();

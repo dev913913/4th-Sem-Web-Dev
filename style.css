@@ -5,10 +5,22 @@
     font-family: 'Poppins', Arial, sans-serif;
 }
 
+:root {
+    --bg-main: #0f172a;
+    --bg-panel: #111827;
+    --bg-soft: #1e293b;
+    --line: #334155;
+    --text-main: #e2e8f0;
+    --text-soft: #cbd5e1;
+    --primary: #0284c7;
+    --good: #16a34a;
+    --bad: #ef4444;
+}
+
 body {
     min-height: 100vh;
     background: linear-gradient(145deg, #0f172a, #1e293b);
-    color: #e2e8f0;
+    color: var(--text-main);
     padding: 16px;
 }
 
@@ -20,8 +32,8 @@ body {
 }
 
 .panel {
-    background: #111827;
-    border: 1px solid #334155;
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
     border-radius: 14px;
     padding: 16px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
@@ -30,7 +42,7 @@ body {
 .screen {
     opacity: 0;
     transform: translateY(8px);
-    transition: opacity 200ms ease, transform 200ms ease;
+    transition: opacity 220ms ease, transform 220ms ease;
     pointer-events: none;
     max-height: 0;
     overflow: hidden;
@@ -40,7 +52,7 @@ body {
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
-    max-height: 1600px;
+    max-height: 1800px;
 }
 
 .top-bar {
@@ -55,7 +67,7 @@ body {
 
 .top-bar p {
     margin-top: 4px;
-    color: #cbd5e1;
+    color: var(--text-soft);
     font-size: 0.92rem;
 }
 
@@ -66,7 +78,7 @@ body {
 
 .best-label {
     margin-bottom: 8px;
-    color: #e2e8f0;
+    color: var(--text-main);
     font-weight: 600;
 }
 
@@ -82,9 +94,9 @@ body {
     font-size: 0.78rem;
     padding: 4px 8px;
     border-radius: 999px;
-    background: #1e293b;
+    background: var(--bg-soft);
     border: 1px solid #475569;
-    color: #e2e8f0;
+    color: var(--text-main);
 }
 
 .button-stack {
@@ -94,12 +106,22 @@ body {
 
 .button {
     border: 0;
-    background: #0284c7;
+    background: var(--primary);
     color: #fff;
     border-radius: 10px;
     padding: 12px 14px;
     font-weight: 600;
     cursor: pointer;
+    transform: translateY(0);
+    transition: transform 120ms ease, filter 180ms ease, box-shadow 180ms ease;
+}
+
+.button:hover {
+    filter: brightness(1.08);
+}
+
+.button:active {
+    transform: translateY(1px) scale(0.99);
 }
 
 .button.alt {
@@ -107,7 +129,7 @@ body {
 }
 
 .button.role {
-    background: #16a34a;
+    background: var(--good);
 }
 
 .button.ghost {
@@ -155,23 +177,56 @@ body {
 }
 
 .step.active {
-    color: #e2e8f0;
+    color: var(--text-main);
 }
 
 .step-line {
     flex: 1;
     height: 2px;
-    background: #334155;
+    background: var(--line);
 }
 
-#scoreBoard {
-    font-size: 1rem;
+.scoreboard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
     margin-bottom: 8px;
     color: #f8fafc;
-    background: #0f172a;
+    background: var(--bg-main);
     border: 1px solid #1e40af;
     border-radius: 10px;
     padding: 10px;
+}
+
+.score-item {
+    background: #0b1220;
+    border: 1px solid #1f3258;
+    border-radius: 8px;
+    padding: 6px;
+    text-align: center;
+    display: grid;
+    gap: 2px;
+}
+
+.score-label {
+    font-size: 0.74rem;
+    color: #93c5fd;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.score-item strong {
+    font-size: 1.15rem;
+}
+
+@keyframes scorePulse {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.015); }
+    100% { transform: scale(1); }
+}
+
+.scoreboard--pulse {
+    animation: scorePulse 220ms ease;
 }
 
 .chase-info {
@@ -185,12 +240,13 @@ body {
     display: flex;
     gap: 8px;
     margin-bottom: 12px;
+    flex-wrap: wrap;
 }
 
 .pill {
     padding: 4px 10px;
     border-radius: 999px;
-    background: #1e293b;
+    background: var(--bg-soft);
     border: 1px solid #475569;
     font-size: 0.85rem;
 }
@@ -208,24 +264,38 @@ body {
     background: #1e3a8a;
     padding: 10px;
     border: 1px solid #60a5fa;
+    transition: transform 180ms ease;
 }
 
 @keyframes pop {
-    0% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.25);
-    }
-
-    100% {
-        transform: scale(1);
-    }
+    0% { transform: scale(0.95) rotate(-2deg); }
+    50% { transform: scale(1.16) rotate(2deg); }
+    100% { transform: scale(1) rotate(0deg); }
 }
 
 .comp_image.pop {
-    animation: pop 0.25s ease;
+    animation: pop 0.24s ease;
+}
+
+.feedback-banner {
+    min-height: 26px;
+    margin-bottom: 10px;
+    color: #bfdbfe;
+    opacity: 0.8;
+    transition: color 180ms ease, transform 180ms ease, opacity 180ms ease;
+}
+
+.feedback-banner.show {
+    opacity: 1;
+    transform: translateY(-1px);
+}
+
+.feedback-banner[data-tone="good"] {
+    color: #86efac;
+}
+
+.feedback-banner[data-tone="bad"] {
+    color: #fda4af;
 }
 
 .last-ball {
@@ -240,6 +310,12 @@ body {
     border-radius: 10px;
     padding: 12px;
     margin-bottom: 10px;
+    animation: fadeInUp 220ms ease;
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .overlay-out {
@@ -264,11 +340,22 @@ body {
 
 .emoji-box {
     border: 1px solid #334155;
-    background: #1e293b;
+    background: var(--bg-soft);
     border-radius: 10px;
     min-height: 64px;
     min-width: 64px;
     cursor: pointer;
+    transform: translateY(0);
+    transition: transform 90ms ease, background-color 180ms ease, border-color 180ms ease;
+}
+
+.emoji-box:hover {
+    border-color: #60a5fa;
+}
+
+.emoji-box:active,
+.emoji-box.pressed {
+    transform: translateY(1px) scale(0.98);
 }
 
 .emoji-box.active {
@@ -340,6 +427,14 @@ body {
 @media (max-width: 767px) {
     .hint-text {
         display: none;
+    }
+
+    .scoreboard {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .score-item strong {
+        font-size: 1rem;
     }
 
     .role-stack .button.role {
